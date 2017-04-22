@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Type convenience lookup functions."""
 
-from zope.interface import classProvides
+from zope.interface import provider
 from zope.interface import providedBy
 from zope.schema.interfaces import IVocabularyFactory
 from zope.app.content.interfaces import IContentType
@@ -27,16 +27,21 @@ def queryType(object, interface):
     >>> from zope.interface import Interface
     >>> class IContentType(Interface):
     ...    pass
-    >>> from zope.interface import Interface, implements, directlyProvides
+    >>> from zope.interface import Interface, implementer, directlyProvides
     >>> class I(Interface):
     ...     pass
     >>> class J(Interface):
     ...     pass
     >>> directlyProvides(I, IContentType)
-    >>> class C(object):
-    ...     implements(I)
-    >>> class D(object):
-    ...     implements(J,I)
+
+    >>> @implementer(I)
+    ... class C(object):
+    ...     pass
+
+    >>> @implementer(J, I)
+    ... class D(object):
+    ...     pass
+
     >>> obj = C()
     >>> c1_ctype = queryType(obj, IContentType)
     >>> c1_ctype.__name__
@@ -47,21 +52,27 @@ def queryType(object, interface):
     ...     pass
     >>> class I3(Interface):
     ...     pass
-    >>> class C1(object):
-    ...     implements(I1)
+
+    >>> @implementer(I1)
+    ... class C1(object):
+    ...     pass
+
     >>> obj1 = C1()
     >>> c1_ctype = queryType(obj1, IContentType)
     >>> c1_ctype.__name__
     'I'
-    >>> class C2(object):
-    ...     implements(I2)
+
+    >>> @implementer(I2)
+    ... class C2(object):
+    ...     pass
     >>> obj2 = C2()
     >>> c2_ctype = queryType(obj2, IContentType)
     >>> c2_ctype.__name__
     'I'
 
-    >>> class C3(object):
-    ...     implements(I3)
+    >>> @implementer(I3)
+    ... class C3(object):
+    ...     pass
     >>> obj3 = C3()
 
     If Interface doesn't provide `IContentType`, `queryType` returns ``None``.
@@ -73,8 +84,10 @@ def queryType(object, interface):
     >>> class I4(I):
     ...     pass
     >>> directlyProvides(I4, IContentType)
-    >>> class C4(object):
-    ...     implements(I4)
+
+    >>> @implementer(I4)
+    ... class C4(object):
+    ...     pass
     >>> obj4 = C4()
     >>> c4_ctype = queryType(obj4, IContentType)
     >>> c4_ctype.__name__
@@ -93,10 +106,26 @@ def queryType(object, interface):
 
 def queryContentType(object):
     """Returns the interface implemented by object which implements
-    `IContentType`."""
+    :class:`zope.app.content.interfaces.IContentType`.
+
+    >>> from zope.interface import Interface, implementer, directlyProvides
+    >>> class I(Interface):
+    ...     pass
+    >>> directlyProvides(I, IContentType)
+
+    >>> @implementer(I)
+    ... class C(object):
+    ...     pass
+
+    >>> obj = C()
+    >>> c1_ctype = queryContentType(obj)
+    >>> c1_ctype.__name__
+    'I'
+
+    """
     return queryType(object, IContentType)
 
 
+@provider(IVocabularyFactory)
 class ContentTypesVocabulary(UtilityVocabulary):
-    classProvides(IVocabularyFactory)
     interface = IContentType
