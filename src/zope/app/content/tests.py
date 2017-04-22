@@ -16,5 +16,21 @@
 import doctest
 import unittest
 
+from zope import component
+from zope.schema.interfaces import IVocabularyFactory
+from zope.testing.cleanup import CleanUp
+import zope.app.content
+
+class TestConfiguration(CleanUp, unittest.TestCase):
+
+    def test_configuration(self):
+        from zope.configuration import xmlconfig
+        xmlconfig.file('configure.zcml', package=zope.app.content)
+
+        component.getUtility(IVocabularyFactory, name="Content Types")
+
 def test_suite():
-    return doctest.DocTestSuite("zope.app.content")
+    return unittest.TestSuite((
+        doctest.DocTestSuite("zope.app.content"),
+        unittest.defaultTestLoader.loadTestsFromName(__name__),
+        ))
