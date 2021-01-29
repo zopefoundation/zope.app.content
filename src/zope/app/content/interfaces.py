@@ -16,6 +16,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface.interfaces import IInterface
 
+
 class IContentType(IInterface):
     """This interface represents a content type.
 

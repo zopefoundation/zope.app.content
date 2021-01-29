@@ -21,6 +21,7 @@ from zope.schema.interfaces import IVocabularyFactory
 from zope.testing.cleanup import CleanUp
 import zope.app.content
 
+
 class TestConfiguration(CleanUp, unittest.TestCase):
 
     def test_configuration(self):
@@ -29,8 +30,9 @@ class TestConfiguration(CleanUp, unittest.TestCase):
 
         component.getUtility(IVocabularyFactory, name="Content Types")
 
+
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite("zope.app.content"),
         unittest.defaultTestLoader.loadTestsFromName(__name__),
-        ))
+    ))
