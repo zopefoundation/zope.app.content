@@ -16,10 +16,11 @@
 import doctest
 import unittest
 
-from zope import component
 from zope.schema.interfaces import IVocabularyFactory
 from zope.testing.cleanup import CleanUp
+
 import zope.app.content
+from zope import component
 
 
 class TestConfiguration(CleanUp, unittest.TestCase):
